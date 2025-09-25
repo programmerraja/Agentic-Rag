@@ -1,0 +1,71 @@
+{
+  "system": {
+    "name": "agentic-rag",
+    "version": "1.0.0",
+    "debug": false
+  },
+  "parsers": {
+    "default": "docling",
+    "available": {
+      "docling": {
+        "class": "DoclingParser",
+        "config": {
+          "enable_ocr": false,
+          "table_structure": false
+        }
+      }
+    }
+  },
+  "chunkers": {
+    "default": "hierarchical",
+    "available": {
+      "semantic": {
+        "class": "SemanticChunker",
+        "config": {
+          "buffer_size": 1,
+          "threshold": 0.75,
+          "embed_model_name": "BAAI/bge-small-en-v1.5"
+        }
+      },
+      "hierarchical": {
+        "class": "HierarchicalChunker",
+        "config": {
+          "chunk_sizes": [1536, 512, 128]
+        }
+      }
+    }
+  },
+  "vector_stores": {
+    "default": "qdrant",
+    "available": {
+      "qdrant": {
+        "class": "QdrantStore",
+        "config": {
+          "url": "http://localhost:6333",
+          "collection_name": "documents",
+          "api_key": "",
+          "enable_hybrid": true,
+          "batch_size": 64,
+          "parallel": 1,
+          "embed_model_name": "BAAI/bge-small-en-v1.5"
+        }
+      }
+    }
+  },
+  "agents": {
+    "manager": {
+      "class": "ManagerAgent",
+      "config": {
+        "model": "gemini-2.5-flash",
+        "tools": ["get_context", "search_documents"]
+      }
+    },
+    "assistant": {
+      "class": "AssistantAgent",
+      "config": {
+        "model": "gemini-2.5-flash",
+        "specialization": "health_insurance"
+      }
+    }
+  }
+}

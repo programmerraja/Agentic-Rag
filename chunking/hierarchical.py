@@ -47,11 +47,11 @@ node_parser = HierarchicalNodeParser.from_defaults(chunk_sizes=[1536, 512, 128])
 
 # docling_node_parser = DoclingNodeParser()
 
-documents = PDFReader().load_data(file="../documents/Imperial Dynamic Plan (HMO) 012-8-18.pdf")
+# documents = PDFReader().load_data(file="../documents/Family Health Optima Insurance Plan.pdf")
 
 vector_store = QdrantVectorStore(
     client=qdrant_client.QdrantClient(url="http://localhost:6333", api_key=""),
-    collection_name="split_hierarchical",
+    collection_name="documents",
     enable_hybrid=True,
     batch_size=64,
     parallel=1,
@@ -59,7 +59,7 @@ vector_store = QdrantVectorStore(
 
 storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
-nodes = node_parser.get_nodes_from_documents(documents)
+# nodes = node_parser.get_nodes_from_documents(documents)
 
 # docling_nodes = docling_node_parser.get_nodes_from_documents(documents)
 
@@ -69,16 +69,16 @@ embed_model = FastEmbedEmbedding(model_name="BAAI/bge-small-en-v1.5")
 Settings.embed_model = embed_model
 
 index = VectorStoreIndex(
-    nodes=nodes,
+    nodes=[],
     storage_context=storage_context,
     show_progress=True,
     insert_batch_size=64,
 )
 
-# retriever = index.as_retriever(similarity_top_k=5)
+retriever = index.as_retriever(similarity_top_k=5)
 
-# nodes_with_scores = retriever.retrieve("What is the insurance plan for family health?")
+nodes_with_scores = retriever.retrieve("What is the best health insurance policy for me?")
 
-# for node in nodes_with_scores:
-#     print(node.text)
-#     print(node.metadata)
+for node in nodes_with_scores:
+    print(node.text)
+    print(node.metadata)

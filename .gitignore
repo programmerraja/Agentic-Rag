@@ -208,3 +208,7 @@ __marimo__/
 
 
 data/*
+doc/*
+
+# Cache files
+cache/
